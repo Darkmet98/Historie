@@ -1,0 +1,90 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark main-nav">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="flex-1">
+            <!--spacer-->
+        </div>
+        <div class="order-first order-md-0 d-flex justify-content-center">
+            <a class="navbar-brand" href="{{ url('main') }}">
+                <img src="{{ asset('images/logo.png') }}" class="logo"  alt="">
+            </a>
+        </div>
+        {#<div class="collapse navbar-collapse flex-1">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item">
+                    <form class="form-inline">
+
+                        {% if app.user %}
+                            <a class="btn btn-outline-danger my-2 my-sm-0" id="botonCerrarSesion"  href='{{ path("app_logout") }}'><i class="fas fa-sign-out-alt"></i></a>
+                        {% else %}
+                            <a class="btn btn-outline-info my-2 my-sm-0" id="botonIniciarSesion" style="margin-right: 5vh;" href='{{ path("app_login") }}'><i class="fas fa-user"></i></a>
+                        {% endif %}
+                    </form>
+                </li>
+            </ul>
+        </div>#}
+    </div>
+</nav>
+{#
+{% if is_granted('ROLE_ADMIN') %}
+    <nav class="navbar navbar-items navbar-expand navbar-dark bg-dark">
+        <div class="container">
+            <div class="mx-auto">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <span class="nav-link">Mantenimiento:</span>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Plantas
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item"  href='{{ path("planta_new") }}'>Nuevo</a>
+                            <a class="dropdown-item" href='{{ path("planta_index") }}'>Listar</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Partes
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item"  href='{{ path("parteutil_new") }}'>Nuevo</a>
+                            <a class="dropdown-item" href='{{ path("parteutil_index") }}'>Listar</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Usos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item"  href='{{ path("usomedico_new") }}'>Nuevo</a>
+                            <a class="dropdown-item" href='{{ path("usomedico_index") }}'>Listar</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Colores
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item"  href='{{ path("colorflor_new") }}'>Nuevo</a>
+                            <a class="dropdown-item" href='{{ path("colorflor_index") }}'>Listar</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Productos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item"  href='{{ path("producto_new") }}'>Nuevo</a>
+                            <a class="dropdown-item" href='{{ path("producto_index") }}'>Listar</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="position-absolute" id="navbar-collapse7"><!--spacer--></div>
+        </div>
+    </nav>
+{% endif %}
+#}
