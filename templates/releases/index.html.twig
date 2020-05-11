@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Releases index{% endblock %}
+
+{% block body %}
+    <h1>Releases index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Version</th>
+                <th>Changelog</th>
+                <th>File</th>
+                <th>Md5</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for release in releases %}
+            <tr>
+                <td>{{ release.id }}</td>
+                <td>{{ release.version }}</td>
+                <td>{{ release.changelog }}</td>
+                <td>{{ release.file }}</td>
+                <td>{{ release.md5 }}</td>
+                <td>
+                    <a href="{{ path('releases_show', {'id': release.id}) }}">show</a>
+                    <a href="{{ path('releases_edit', {'id': release.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('releases_new') }}">Create new</a>
+{% endblock %}

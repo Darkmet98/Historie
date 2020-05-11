@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pofile index{% endblock %}
+
+{% block body %}
+    <h1>Pofile index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Path</th>
+                <th>Entries</th>
+                <th>Position</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for pofile in pofiles %}
+            <tr>
+                <td>{{ pofile.id }}</td>
+                <td>{{ pofile.name }}</td>
+                <td>{{ pofile.path }}</td>
+                <td>{{ pofile.entries }}</td>
+                <td>{{ pofile.position }}</td>
+                <td>
+                    <a href="{{ path('pofile_show', {'id': pofile.id}) }}">show</a>
+                    <a href="{{ path('pofile_edit', {'id': pofile.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('pofile_new') }}">Create new</a>
+{% endblock %}
