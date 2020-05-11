@@ -3,7 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Pofile;
+use App\Entity\Projects;
 use App\Form\PofileType;
+use Cz\Git\GitRepository;
+use Gettext\Generator\JsonGenerator;
+use Gettext\Loader\PoLoader;
+use RecursiveDirectoryIterator as dirIterator;
+use RecursiveIteratorIterator as recursiveIterator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,10 +43,8 @@ class PofileController extends AbstractController
         $form = $this->createForm(PofileType::class, $pofile);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($pofile);
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
+            $this->GeneratePoFiles();
 
             return $this->redirectToRoute('pofile_index');
         }
@@ -93,5 +97,53 @@ class PofileController extends AbstractController
         }
 
         return $this->redirectToRoute('pofile_index');
+    }
+
+    private function GeneratePoFiles() {
+        $project = $this->getDoctrine()
+            ->getRepository(Projects::class)
+            ->find($_POST["pofile"]["projectid"][0]);
+
+        $folderRoute = $this->getParameter('git_repository').'/'.$project->getName();
+
+        if ( !is_dir( $folderRoute ) ) {
+            mkdir( $folderRoute );
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $repo = GitRepository::cloneRepository($project->getRepository(), $folderRoute);
+        $repo->checkout($project->getBranch());
+
+        $array = $this->searchPo($folderRoute);
+
+        foreach ($array as $path) {
+            //Load a .po file and export to .json
+            $translations = (new PoLoader())->loadFile($path);
+            $json = (new JsonGenerator())->generateString($translations);
+
+            $pofile = new Pofile();
+            $pofile->setName(basename($path));
+            $pofile->setPath($path);
+            $pofile->setPosition(0);
+            $pofile->addProjectid($project);
+            $pofile->setEntries($json);
+            $entityManager->persist($pofile);
+        }
+        $entityManager->flush();
+    }
+
+    function searchPo($path) {
+        $arr = [];
+
+        $it = new dirIterator($path);
+        $display = Array ( 'po' );
+        foreach(new recursiveIterator($it) as $file)
+        {
+            $array = explode('.', $file);
+            if (in_array(strtolower(array_pop($array)), $display))
+                array_push($arr, $file);
+        }
+        return $arr;
     }
 }

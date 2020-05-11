@@ -1,4 +1,7 @@
 {
+    "czproject/git-php": {
+        "version": "v3.17.1"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -77,6 +80,12 @@
     },
     "egulias/email-validator": {
         "version": "2.1.17"
+    },
+    "gettext/gettext": {
+        "version": "v5.4.1"
+    },
+    "gettext/languages": {
+        "version": "2.6.0"
     },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"

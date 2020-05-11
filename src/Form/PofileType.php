@@ -12,10 +12,6 @@ class PofileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('path')
-            ->add('entries')
-            ->add('position')
             ->add('projectid')
         ;
     }

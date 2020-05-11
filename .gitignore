@@ -7,6 +7,7 @@
 /public/bundles/
 /var/
 /vendor/
+/git/
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
