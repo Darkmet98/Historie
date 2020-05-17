@@ -115,5 +115,5 @@
       <path value="$PROJECT_DIR$/vendor/gettext/languages" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.4" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
 </project>

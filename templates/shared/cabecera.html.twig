@@ -11,7 +11,7 @@
                 <img src="{{ asset('images/logo.png') }}" class="logo"  alt="">
             </a>
         </div>
-        {#<div class="collapse navbar-collapse flex-1">
+        <div class="collapse navbar-collapse flex-1">
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item">
                     <form class="form-inline">
@@ -24,10 +24,10 @@
                     </form>
                 </li>
             </ul>
-        </div>#}
+        </div>
     </div>
 </nav>
-{#
+
 {% if is_granted('ROLE_ADMIN') %}
     <nav class="navbar navbar-items navbar-expand navbar-dark bg-dark">
         <div class="container">
@@ -38,47 +38,29 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Plantas
+                            Proyectos
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item"  href='{{ path("planta_new") }}'>Nuevo</a>
-                            <a class="dropdown-item" href='{{ path("planta_index") }}'>Listar</a>
+                            <a class="dropdown-item"  href='{{ path("projects_new") }}'>Nuevo</a>
+                            <a class="dropdown-item" href='{{ path("projects_index") }}'>Listar</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Partes
+                            Releases
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item"  href='{{ path("parteutil_new") }}'>Nuevo</a>
-                            <a class="dropdown-item" href='{{ path("parteutil_index") }}'>Listar</a>
+                            <a class="dropdown-item"  href='{{ path("releases_new") }}'>Nuevo</a>
+                            <a class="dropdown-item" href='{{ path("releases_index") }}'>Listar</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Usos
+                            Componentes
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item"  href='{{ path("usomedico_new") }}'>Nuevo</a>
-                            <a class="dropdown-item" href='{{ path("usomedico_index") }}'>Listar</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Colores
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item"  href='{{ path("colorflor_new") }}'>Nuevo</a>
-                            <a class="dropdown-item" href='{{ path("colorflor_index") }}'>Listar</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Productos
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item"  href='{{ path("producto_new") }}'>Nuevo</a>
-                            <a class="dropdown-item" href='{{ path("producto_index") }}'>Listar</a>
+                            <a class="dropdown-item"  href='{{ path("pofile_new") }}'>Importar</a>
+                            <a class="dropdown-item" href='{{ path("pofile_index") }}'>Listar</a>
                         </div>
                     </li>
                 </ul>
@@ -87,4 +69,3 @@
         </div>
     </nav>
 {% endif %}
-#}

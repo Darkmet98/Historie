@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="historie@localhost" uuid="cb900cec-8774-4601-9ec2-01adf086b259">
+    <data-source source="LOCAL" name="Raspberry Pi" uuid="feeda253-d6fa-46f5-9f18-554b9134b143">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/historie</jdbc-url>
+      <jdbc-url>jdbc:mysql://192.168.1.117:3306/historie</jdbc-url>
+      <driver-properties>
+        <property name="serverTimezone" value="UTC" />
+      </driver-properties>
     </data-source>
   </component>
 </project>
