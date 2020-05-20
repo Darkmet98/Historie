@@ -188,7 +188,6 @@ class PofileController extends AbstractController
      */
     public function getJsonList(Projects $id): JsonResponse
     {
-        header("Access-Control-Allow-Origin: *");
         $poController = new PoEntryController();
 
         $pos = $id->getPofileid();
@@ -211,7 +210,6 @@ class PofileController extends AbstractController
      */
     public function getJsonEntry(Projects $id, int $entry, int $position=null): JsonResponse
     {
-        header("Access-Control-Allow-Origin: *");
         $poEntry = new PoEntryController();
 
         //Get the PoFile
@@ -234,7 +232,6 @@ class PofileController extends AbstractController
      */
     public function setJsonEntry(Request $request)
     {
-        header("Access-Control-Allow-Origin: *");
         $json = json_decode($request->getContent(), true);
 
         $po = $this->getDoctrine()

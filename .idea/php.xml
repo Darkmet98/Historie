@@ -113,6 +113,7 @@
       <path value="$PROJECT_DIR$/vendor/czproject/git-php" />
       <path value="$PROJECT_DIR$/vendor/gettext/gettext" />
       <path value="$PROJECT_DIR$/vendor/gettext/languages" />
+      <path value="$PROJECT_DIR$/vendor/nelmio/cors-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
