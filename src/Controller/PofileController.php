@@ -8,7 +8,6 @@ use App\Form\PofileType;
 use Cz\Git\GitRepository;
 use Gettext\Generator\JsonGenerator;
 use Gettext\Loader\PoLoader;
-use phpDocumentor\Reflection\Project;
 use RecursiveDirectoryIterator as dirIterator;
 use RecursiveIteratorIterator as recursiveIterator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -101,45 +100,67 @@ class PofileController extends AbstractController
         return $this->redirectToRoute('pofile_index');
     }
 
+
+    /**
+     * @throws \Cz\Git\GitException
+     *
+     * Generate the po entries on the pofile
+     */
     private function GeneratePoFiles() {
+
+        //Get the project
         $project = $this->getDoctrine()
             ->getRepository(Projects::class)
             ->find($_POST["pofile"]["projectid"][0]);
 
+        //Obtain the folder route
         $folderRoute = $this->getParameter('git_repository').'/'.$project->getName();
 
+        //Check the git folder
         if ( !is_dir(  $this->getParameter('git_repository') ) ) {
             mkdir(  $this->getParameter('git_repository') );
         }
 
+        //Check the project folder
         if ( !is_dir( $folderRoute ) ) {
             mkdir( $folderRoute );
         }
 
         $entityManager = $this->getDoctrine()->getManager();
 
+        //Obtain the files from git
         $repo = GitRepository::cloneRepository($project->getRepository(), $folderRoute);
         $repo->checkout($project->getBranch());
 
+        //Search the all po files
         $array = $this->searchPo($folderRoute);
+
+        $poController = new PoEntryController();
 
         foreach ($array as $path) {
             //Load a .po file and export to .json
             $translations = (new PoLoader())->loadFile($path);
+
             $json = (new JsonGenerator())->generateString($translations);
 
-            $pofile = new Pofile();
-            $pofile->setName(basename($path));
-            $pofile->setPath($path);
-            $pofile->setPosition(0);
-            $pofile->addProjectid($project);
-            $pofile->setEntries($json);
-            $entityManager->persist($pofile);
+            $poFile = new Pofile();
+            $poFile->setName(basename($path));
+            $poFile->setPath($path);
+            $poFile->setPosition(0);
+            $poFile->addProjectid($project);
+            $poFile->setEntries($poController->FixJsonGeneration($json));
+            $entityManager->persist($poFile);
         }
         $entityManager->flush();
     }
 
-    function searchPo($path) {
+    /**
+     * @param $path
+     * @return array
+     *
+     * Search the po files on the directory
+     */
+    function searchPo(string $path) {
         $arr = [];
 
         $it = new dirIterator($path);
@@ -152,20 +173,28 @@ class PofileController extends AbstractController
         }
         return $arr;
     }
-    //AJAX
+
+    /************************
+     *  REST API FUNCTIONS  *
+     ************************/
 
     /**
      * @Route("/json/get/{id}", name="pofile_json_get", methods={"GET"})
      * @param $id
      * @return JsonResponse
+     *
+     * Return a list of components
      */
     public function getJsonList(Projects $id): JsonResponse
     {
         header("Access-Control-Allow-Origin: *");
+        $poController = new PoEntryController();
+
         $pos = $id->getPofileid();
         $data = [];
+
         foreach ($pos as $po) {
-            array_push($data, $this->GenerateObjectJson($po, true));
+            array_push($data, $poController->GenerateObjectJson($po));
         }
 
         return new JsonResponse($data, Response::HTTP_OK);
@@ -182,44 +211,36 @@ class PofileController extends AbstractController
     public function getJsonEntry(Projects $id, int $entry, int $position=null): JsonResponse
     {
         header("Access-Control-Allow-Origin: *");
-        $po = $this->SearchEntry($id->getPofileid()->toArray(), $entry);
         $poEntry = new PoEntryController();
+
+        //Get the PoFile
+        $po = $poEntry->SearchEntry($id->getPofileid()->toArray(), $entry);
+
+        //Check the position
         $entryPosition = ($position == null)?$po->getPosition():$position;
-        $entry = $poEntry->getEntry($po->getEntries(), $entryPosition);
 
-        return new JsonResponse($this->GenerateEntryJson($entry, $id->getName(), $po->getName(), $entryPosition), Response::HTTP_OK);
+        //Get the entry
+        $poEntries = json_decode($po->getEntries(), true);
+        $entry = $poEntries[$entryPosition];
+
+        return new JsonResponse($poEntry->GenerateEntryJson($entry, $id->getName(), $po->getName(), $entryPosition, count($poEntries)), Response::HTTP_OK);
     }
 
-    //JSON
-    public function GenerateObjectJson(Pofile $po, bool $isList) {
-        if($isList) return  [
-            'Id'=>$po->getId(),
-            'Name'=>$po->getName(),
-            'Status'=>'Incomplete',
-            'Translated'=>40
-        ];
-        else
-            return null;
+    /**
+     * @Route("/json/set", name="pofile_entry_set")
+     * @param Request $request
+     */
+    public function setJsonEntry(Request $request)
+    {
+        /*$json = json_decode($request->getContent(), true);
+
+        $po = $this->getDoctrine()
+            ->getRepository(Pofile::class)
+            ->find($json["id"]);
+
+        $poEntry = new PoEntryController();
+        $entry = $poEntry->getEntry($po->getEntries(), $json["position"]);*/
+
     }
 
-    private function GenerateEntryJson(array $entry, string $name, string $file, int $index) {
-        $ori = array_keys($entry["entry"])[0];
-        return[
-            "Project"=>$name,
-            "Original"=>$ori,
-            "Translated"=>$entry["entry"][$ori],
-            "Context"=>$entry["id"],
-            "File"=>$file,
-            "Size"=>$entry["size"],
-            "Index"=>$index
-        ];
-    }
-
-    private function SearchEntry(array $arr, int $id){
-        foreach ($arr as $entry){
-            if($entry->getId() == $id)
-                return $entry;
-        }
-        return null;
-    }
 }
