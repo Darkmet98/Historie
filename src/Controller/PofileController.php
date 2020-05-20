@@ -8,6 +8,7 @@ use App\Form\PofileType;
 use Cz\Git\GitRepository;
 use Gettext\Generator\JsonGenerator;
 use Gettext\Loader\PoLoader;
+use http\Header;
 use RecursiveDirectoryIterator as dirIterator;
 use RecursiveIteratorIterator as recursiveIterator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -227,20 +228,26 @@ class PofileController extends AbstractController
     }
 
     /**
-     * @Route("/json/set", name="pofile_entry_set")
+     * @Route("/json/set", name="pofile_entry_set", methods={"PUT"})
      * @param Request $request
+     * @return JsonResponse
      */
     public function setJsonEntry(Request $request)
     {
-        /*$json = json_decode($request->getContent(), true);
+        header("Access-Control-Allow-Origin: *");
+        $json = json_decode($request->getContent(), true);
 
         $po = $this->getDoctrine()
             ->getRepository(Pofile::class)
             ->find($json["id"]);
 
-        $poEntry = new PoEntryController();
-        $entry = $poEntry->getEntry($po->getEntries(), $json["position"]);*/
+        $poEntries = json_decode($po->getEntries(), true);
 
+        $poEntries[$json["position"]]["Translated"] = $json["translation"];
+        $po->setEntries(json_encode($poEntries, true));
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse(null, Response::HTTP_OK);
     }
 
 }
