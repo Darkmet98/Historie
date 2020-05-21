@@ -103,7 +103,6 @@ class ProjectsController extends AbstractController
      */
     public function getAll(): JsonResponse
     {
-        header("Access-Control-Allow-Origin: *");
         $projects = $this->getDoctrine()
             ->getRepository(Projects::class)
             ->findAll();
