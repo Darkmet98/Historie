@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Projects;
 use App\Form\ProjectsType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,35 +95,5 @@ class ProjectsController extends AbstractController
         }
 
         return $this->redirectToRoute('projects_index');
-    }
-
-
-    //AJAX
-    /**
-     * @Route("/json/get", name="get_all", methods={"GET"})
-     */
-    public function getAll(): JsonResponse
-    {
-        $projects = $this->getDoctrine()
-            ->getRepository(Projects::class)
-            ->findAll();
-        $data = [];
-
-        foreach ($projects as $project) {
-            array_push($data, $this->GenerateObjectJson($project));
-        }
-
-        return new JsonResponse($data, Response::HTTP_OK);
-    }
-
-
-    public function GenerateObjectJson(Projects $project) {
-        return  [
-            'Id'=>$project->getId(),
-            'Name'=>$project->getName(),
-            'Description'=>$project->getDescription(),
-            'Repository'=>$project->getRepository(),
-            'Branch'=>$project->getBranch()
-            ];
     }
 }

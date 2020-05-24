@@ -31,6 +31,11 @@ class User implements UserInterface
     private $roles = [];
 
     /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+     private $apiToken;
+
+    /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
@@ -104,6 +109,17 @@ class User implements UserInterface
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
+
+    public function getToken()
+    {
+        return $this->apiToken;
+    }
+
+    public function setToken()
+    {
+
+    }
+
 
     /**
      * @see UserInterface
