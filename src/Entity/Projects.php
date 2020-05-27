@@ -9,8 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Projects
  *
+ * @ORM\Entity(repositoryClass="App\Repository\ProjectsRepository")
  * @ORM\Table(name="projects")
- * @ORM\Entity
  */
 class Projects
 {
