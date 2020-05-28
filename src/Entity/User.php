@@ -110,17 +110,6 @@ class User implements UserInterface
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
 
-    public function getToken()
-    {
-        return $this->apiToken;
-    }
-
-    public function setToken()
-    {
-
-    }
-
-
     /**
      * @see UserInterface
      */
