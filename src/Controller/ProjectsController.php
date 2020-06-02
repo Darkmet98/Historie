@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Projects;
 use App\Form\ProjectsType;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,15 +19,25 @@ class ProjectsController extends AbstractController
 {
     /**
      * @Route("/", name="projects_index", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
      */
-    public function index(): Response
+    public function index(PaginatorInterface $paginator, Request $request): Response
     {
         $projects = $this->getDoctrine()
             ->getRepository(Projects::class)
             ->findAll();
 
+        $pagination = $paginator->paginate(
+            $projects,
+            $request->query->getInt("page",1),
+            5
+        );
+
         return $this->render('projects/index.html.twig', [
-            'projects' => $projects,
+            'pagination' => $pagination,
         ]);
     }
 

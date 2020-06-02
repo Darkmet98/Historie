@@ -1,41 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pofile index{% endblock %}
+{% block title %}Listado de componentes{% endblock %}
 
 {% block body %}
-    <h1>Pofile index</h1>
+    <h1>Listado de componentes</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Path</th>
-                <th>Entries</th>
-                <th>Position</th>
-                <th>actions</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Id', 'id') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Nombre', 'name') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Proyecto', 'projectid.name') }}</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-        {% for pofile in pofiles %}
+        {% for pofile in pagination %}
             <tr>
                 <td>{{ pofile.id }}</td>
                 <td>{{ pofile.name }}</td>
-                <td>{{ pofile.path }}</td>
-                <td>{{ pofile.entries }}</td>
-                <td>{{ pofile.position }}</td>
                 <td>
-                    <a href="{{ path('pofile_show', {'id': pofile.id}) }}">show</a>
-                    <a href="{{ path('pofile_edit', {'id': pofile.id}) }}">edit</a>
+                    {% for project in pofile.projectid %}
+                        {{ project.name }}
+                    {% else %}
+                        No tiene un proyecto asignado (esto no debería pasar)
+                    {% endfor %}
+                </td>
+                <td>
+                    <a class="btn btn-warning" href="{{ path('pofile_edit', {'id': pofile.id}) }}">Editar</a>
+                    <a class="btn btn-danger" data-toggle="modal" data-target="#A{{ pofile.id }}" >Borrar</a>
                 </td>
             </tr>
+            {{ include('pofile/modalDelete.html.twig') }}
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="7">No hay ningún componente en el servidor</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    <h1>Componentes registrados en la base de datos:  {{ pagination.getTotalItemCount }}</h1>
 
-    <a href="{{ path('pofile_new') }}">Create new</a>
+    {% include('shared/paginator.html.twig') %}
 {% endblock %}

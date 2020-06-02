@@ -8,11 +8,10 @@ use App\Form\PofileType;
 use Cz\Git\GitRepository;
 use Gettext\Generator\JsonGenerator;
 use Gettext\Loader\PoLoader;
-use http\Header;
+use Knp\Component\Pager\PaginatorInterface;
 use RecursiveDirectoryIterator as dirIterator;
 use RecursiveIteratorIterator as recursiveIterator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,14 +24,20 @@ class PofileController extends AbstractController
     /**
      * @Route("/", name="pofile_index", methods={"GET"})
      */
-    public function index(): Response
+    public function index(PaginatorInterface $paginator, Request $request): Response
     {
         $pofiles = $this->getDoctrine()
             ->getRepository(Pofile::class)
             ->findAll();
 
+        $pagination = $paginator->paginate(
+            $pofiles,
+            $request->query->getInt("page",1),
+            10
+        );
+
         return $this->render('pofile/index.html.twig', [
-            'pofiles' => $pofiles,
+            'pagination' => $pagination,
         ]);
     }
 

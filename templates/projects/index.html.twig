@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Projects index{% endblock %}
+{% block title %}Listado de proyectos{% endblock %}
 
 {% block body %}
     <h1>Projects index</h1>
@@ -8,36 +8,34 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Icon</th>
-                <th>Repository</th>
-                <th>Branch</th>
-                <th>actions</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Id', 'id') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Nombre', 'name') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Descripción', 'description') }}</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-        {% for project in projects %}
+        {% for project in pagination %}
             <tr>
                 <td>{{ project.id }}</td>
                 <td>{{ project.name }}</td>
                 <td>{{ project.description }}</td>
-                <td>{{ project.icon }}</td>
-                <td>{{ project.repository }}</td>
-                <td>{{ project.branch }}</td>
                 <td>
-                    <a href="{{ path('projects_show', {'id': project.id}) }}">show</a>
-                    <a href="{{ path('projects_edit', {'id': project.id}) }}">edit</a>
+                    <a class="btn btn-info" href="{{ path('projects_show', {'id': project.id}) }}">Mostrar</a>
+                    <a class="btn btn-warning" href="{{ path('projects_edit', {'id': project.id}) }}">Editar</a>
+                    <a class="btn btn-danger" data-toggle="modal" data-target="#A{{ project.id }}" >Borrar</a>
                 </td>
             </tr>
+            {{ include('projects/modalDelete.html.twig') }}
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="7">No hay ningún proyecto en el servidor</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('projects_new') }}">Create new</a>
+    <h1>Proyectos registrados en la base de datos:  {{ pagination.getTotalItemCount }}</h1>
+
+    {% include('shared/paginator.html.twig') %}
 {% endblock %}

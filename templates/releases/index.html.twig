@@ -1,41 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Releases index{% endblock %}
+{% block title %}Listado de lanzamientos{% endblock %}
 
 {% block body %}
-    <h1>Releases index</h1>
+    <h1>Listado de lanzamientos</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Version</th>
-                <th>Changelog</th>
-                <th>File</th>
-                <th>Md5</th>
-                <th>actions</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Proyecto', 'projectid') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Version', 'version') }}</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-        {% for release in releases %}
+        {% for release in pagination %}
             <tr>
-                <td>{{ release.id }}</td>
-                <td>{{ release.version }}</td>
-                <td>{{ release.changelog }}</td>
-                <td>{{ release.file }}</td>
-                <td>{{ release.md5 }}</td>
                 <td>
-                    <a href="{{ path('releases_show', {'id': release.id}) }}">show</a>
-                    <a href="{{ path('releases_edit', {'id': release.id}) }}">edit</a>
+                    {% for project in release.projectid %}
+                        {{ project.name }}
+                    {% else %}
+                        No tiene un proyecto asignado (esto no debería pasar)
+                    {% endfor %}
+                </td>
+                <td>{{ release.version }}</td>
+                <td>
+                    <a class="btn btn-warning" href="{{ path('releases_edit', {'id': release.id}) }}">Editar</a>
+                    <a class="btn btn-danger" data-toggle="modal" data-target="#A{{ release.id }}" >Borrar</a>
                 </td>
             </tr>
+            {{ include('releases/modalDelete.html.twig') }}
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="7">No hay ningún lanzamiento en el servidor</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    <h1>Lanzamientos registrados en la base de datos:  {{ pagination.getTotalItemCount }}</h1>
 
-    <a href="{{ path('releases_new') }}">Create new</a>
+    {% include('shared/paginator.html.twig') %}
 {% endblock %}

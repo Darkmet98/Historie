@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Releases;
 use App\Form\ReleasesType;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,15 +17,24 @@ class ReleasesController extends AbstractController
 {
     /**
      * @Route("/", name="releases_index", methods={"GET"})
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
      */
-    public function index(): Response
+    public function index(PaginatorInterface $paginator, Request $request): Response
     {
         $releases = $this->getDoctrine()
             ->getRepository(Releases::class)
             ->findAll();
 
+        $pagination = $paginator->paginate(
+            $releases,
+            $request->query->getInt("page",1),
+            5
+        );
+
         return $this->render('releases/index.html.twig', [
-            'releases' => $releases,
+            'pagination' => $pagination,
         ]);
     }
 
