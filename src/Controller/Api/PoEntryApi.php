@@ -5,7 +5,7 @@ namespace App\Controller\Api;
 
 
 use App\Controller\PoEntryController;
-use App\Entity\Pofile;
+use App\Entity\PoFile;
 use App\Entity\Projects;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -74,7 +74,7 @@ class PoEntryApi extends AbstractController
         $json = json_decode($request->getContent(), true);
 
         $po = $this->getDoctrine()
-            ->getRepository(Pofile::class)
+            ->getRepository(PoFile::class)
             ->find($json["id"]);
 
         $poEntries = json_decode($po->getEntries(), true);

@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Pofile;
+use App\Entity\PoFile;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +19,7 @@ class PofileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Pofile::class,
+            'data_class' => PoFile::class,
         ]);
     }
 }

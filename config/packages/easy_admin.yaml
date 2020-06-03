@@ -14,12 +14,12 @@ easy_admin:
     entities:
         # List the entity class name you want to manage
         Pofile:
-            class: App\Entity\Pofile
+            class: App\Entity\PoFile
             controller: App\Controller\PofileController
             disabled_actions: ['show', 'edit']
             form:
                 fields:
-                    - 'projectid'
+                    - 'Project'
 
         User:
             class: App\Entity\User

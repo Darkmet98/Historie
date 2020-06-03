@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Controller;
-use App\Entity\Pofile;
+use App\Entity\PoFile;
 
 class PoEntryController
 {
     /**
      * @param string $json
-     * @return string
+     * @return array
      *
      * This fixes the po generation from the framework and make this very readable
      */
@@ -19,7 +19,7 @@ class PoEntryController
             array_push($poArray, $this->GenerateEntry($text, $entry));
         }
 
-        return json_encode($poArray, true);
+        return $poArray;
 
     }
 
@@ -45,12 +45,12 @@ class PoEntryController
 
 
     /**
-     * @param Pofile $po
+     * @param PoFile $po
      * @return array|null
      *
      * Generate a Json entry for the component list
      */
-    public function GenerateObjectJson(Pofile $po) {
+    public function GenerateObjectJson(PoFile $po) {
         return  [
             'Id'=>$po->getId(),
             'Name'=>$po->getName(),
@@ -62,7 +62,7 @@ class PoEntryController
     /**
      * @param array $arr
      * @param int $id
-     * @return Pofile|null
+     * @return PoFile|null
      *
      * Search the entry
      */

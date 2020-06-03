@@ -2,69 +2,45 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\ReleasesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Releases
- *
- * @ORM\Table(name="releases")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=ReleasesRepository::class)
  */
 class Releases
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="Id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="Version", type="string", length=30, nullable=false)
+     * @ORM\Column(type="string", length=50)
      */
-    private $version;
+    private $Version;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="Changelog", type="text", length=65535, nullable=true, options={"default"="NULL"})
+     * @ORM\Column(type="text")
      */
-    private $changelog = 'NULL';
+    private $Changelog;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="File", type="text", length=65535, nullable=false)
+     * @ORM\Column(type="text")
      */
-    private $file;
+    private $File;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="Md5", type="text", length=65535, nullable=false)
+     * @ORM\Column(type="text")
      */
-    private $md5;
+    private $Md5;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Projects", mappedBy="releasesid")
+     * @ORM\ManyToOne(targetEntity=Projects::class, inversedBy="releases")
      */
-    private $projectid;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->projectid = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+    private $Project;
 
     public function getId(): ?int
     {
@@ -73,82 +49,66 @@ class Releases
 
     public function getVersion(): ?string
     {
-        return $this->version;
+        return $this->Version;
     }
 
-    public function setVersion(string $version): self
+    public function setVersion(string $Version): self
     {
-        $this->version = $version;
+        $this->Version = $Version;
 
         return $this;
     }
 
     public function getChangelog(): ?string
     {
-        return $this->changelog;
+        return $this->Changelog;
     }
 
-    public function setChangelog(?string $changelog): self
+    public function setChangelog(string $Changelog): self
     {
-        $this->changelog = $changelog;
+        $this->Changelog = $Changelog;
 
         return $this;
     }
 
     public function getFile(): ?string
     {
-        return $this->file;
+        return $this->File;
     }
 
-    public function setFile(string $file): self
+    public function setFile(string $File): self
     {
-        $this->file = $file;
+        $this->File = $File;
 
         return $this;
     }
 
     public function getMd5(): ?string
     {
-        return $this->md5;
+        return $this->Md5;
     }
 
-    public function setMd5(string $md5): self
+    public function setMd5(string $Md5): self
     {
-        $this->md5 = $md5;
+        $this->Md5 = $Md5;
 
         return $this;
     }
 
-    /**
-     * @return Collection|Projects[]
-     */
-    public function getProjectid(): Collection
+    public function getProject(): ?Projects
     {
-        return $this->projectid;
+        return $this->Project;
     }
 
-    public function addProjectid(Projects $projectid): self
+    public function setProject(?Projects $Project): self
     {
-        if (!$this->projectid->contains($projectid)) {
-            $this->projectid[] = $projectid;
-            $projectid->addReleasesid($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProjectid(Projects $projectid): self
-    {
-        if ($this->projectid->contains($projectid)) {
-            $this->projectid->removeElement($projectid);
-            $projectid->removeReleasesid($this);
-        }
+        $this->Project = $Project;
 
         return $this;
     }
 
     public function __toString()
     {
-        return $this->version;
+        return $this->Version;
     }
 }

@@ -4,7 +4,7 @@
 namespace App\Controller;
 
 
-use App\Entity\Pofile;
+use App\Entity\PoFile;
 use App\Entity\Projects;
 use App\Entity\User;
 use Cz\Git\GitRepository;
@@ -18,54 +18,6 @@ use RecursiveIteratorIterator as recursiveIterator;
 
 class AdminController extends EasyAdminController
 {
-    //PoFile Entity
-    protected function createNewPofile(Pofile $pofile)
-    {
-        //Get the project
-        $project = $this->getDoctrine()
-            ->getRepository(Projects::class)
-            ->find($_POST["pofile"]["projectid"][0]);
-
-        //Obtain the folder route
-        $folderRoute = $this->getParameter('git_repository').'/'.$project->getName();
-
-        //Check the git folder
-        if ( !is_dir(  $this->getParameter('git_repository') ) ) {
-            mkdir(  $this->getParameter('git_repository') );
-        }
-
-        //Check the project folder
-        if ( !is_dir( $folderRoute ) ) {
-            mkdir( $folderRoute );
-        }
-
-        $entityManager = $this->getDoctrine()->getManager();
-
-        //Obtain the files from git
-        $repo = GitRepository::cloneRepository($project->getRepository(), $folderRoute);
-        $repo->checkout($project->getBranch());
-
-        //Search the all po files
-        $array = $this->searchPo($folderRoute);
-
-        $poController = new PoEntryController();
-
-        foreach ($array as $path) {
-            //Load a .po file and export to .json
-            $translations = (new PoLoader())->loadFile($path);
-
-            $json = (new JsonGenerator())->generateString($translations);
-
-            $poFile = new Pofile();
-            $poFile->setName(basename($path));
-            $poFile->setPath($path);
-            $poFile->setPosition(0);
-            $poFile->addProjectid($project);
-            $poFile->setEntries($poController->FixJsonGeneration($json));
-            $entityManager->persist($poFile);
-        }
-        $entityManager->flush();
-    }
 
     /**
      * @param $path
