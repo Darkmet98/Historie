@@ -1,0 +1,31 @@
+easy_admin:
+    user:
+        display_name: true
+        display_avatar: true
+        avatar_property_path: 'gravatar'
+    site_name: '<img src="/images/logo.png" style="height: 10vh;"  alt="">'
+    design:
+        menu:
+            - { entity: 'Pofile', label: 'Components', icon: 'prescription-bottle' }
+            - { entity: 'User', label: 'Users', icon: 'user' }
+            - { entity: 'Projects', label: 'Projects', icon: 'project-diagram' }
+            - { entity: 'Releases', label: 'Releases', icon: 'save' }
+        brand_color: '#a41eb0'
+    entities:
+        # List the entity class name you want to manage
+        Pofile:
+            class: App\Entity\Pofile
+            controller: App\Controller\PofileController
+            disabled_actions: ['show', 'edit']
+            form:
+                fields:
+                    - 'projectid'
+
+        User:
+            class: App\Entity\User
+
+        Projects:
+            class: App\Entity\Projects
+
+        Releases:
+            class: App\Entity\Releases
