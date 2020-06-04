@@ -13,6 +13,13 @@ easy_admin:
             - { entity: 'User', label: 'Users', icon: 'user' }
         brand_color: '#a41eb0'
 
+    list:
+        actions:
+            # displays both the action label and a custom icon
+            - { name: 'edit', icon: 'pencil' }
+            - { name: 'delete', icon: 'times-circle' }
+            - { name: 'new', icon: 'plus-circle' }
+
     entities:
         Pofile:
             class: App\Entity\PoFile
@@ -21,9 +28,28 @@ easy_admin:
             form:
                 fields:
                     - 'Project'
+            new:
+                title: "Import/Update Components"
+            list:
+                actions:
+                    # displays both the action label and a custom icon
+                    - { name: 'new', label: 'Import/Update Components', icon: 'sync' }
+
 
         User:
             class: App\Entity\User
+            form:
+                fields:
+                    - { property: 'email', label: 'Email' }
+                    - property: 'roles'
+                      type: 'choice'
+                      type_options:
+                          expanded: true
+                          multiple: true
+                          choices: { Administrator: 'ROLE_ADMIN' }
+                    - { property: 'password', label: 'Password' }
+                    - { property: 'projects', label: 'Projects' }
+
 
         Projects:
             class: App\Entity\Projects
@@ -36,6 +62,7 @@ easy_admin:
                     - { property: 'Branch', label: 'Branch' }
                     - { property: 'Users', label: 'Users' }
             list:
+                title: "Project List"
                 fields:
                     - { property: 'Name', label: 'Name' }
                     - { property: 'Description', label: 'Description' }
@@ -43,6 +70,8 @@ easy_admin:
                     - { property: 'Users', label: 'Nº Users' }
                     - { property: 'poFiles', label: 'Nº Components' }
                     - { property: 'releases', label: 'Nº Releases' }
+            new:
+                title: "Create new project"
 
         Releases:
             class: App\Entity\Releases
@@ -58,3 +87,5 @@ easy_admin:
                     - { property: 'Version', label: 'Version' }
                     - { property: 'Project', label: 'Project' }
                     #- { property: 'downloadFile', template: 'Releases/download.html.twig', base_path: '%gameReleases%' }
+            new:
+                title: "Upload new release"
