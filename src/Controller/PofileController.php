@@ -107,6 +107,6 @@ class PofileController extends EasyAdminController
         $poFile->setPath($path);
         $poFile->setPosition(0);
         $poFile->setProject($project);
-        return new PoFile();
+        return $poFile;
     }
 }
