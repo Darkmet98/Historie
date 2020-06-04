@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     git_repository: '%kernel.project_dir%/git'
+    gameIcon: 'images/gameIcon'
 services:
     # default configuration for services in *this* file
     _defaults:

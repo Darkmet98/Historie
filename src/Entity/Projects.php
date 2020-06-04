@@ -3,12 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\ProjectsRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=ProjectsRepository::class)
+ * @Vich\Uploadable
  */
 class Projects
 {
@@ -33,6 +37,12 @@ class Projects
      * @ORM\Column(type="text", nullable=true)
      */
     private $Icon;
+
+    /**
+     * @Vich\UploadableField(mapping="Projects", fileNameProperty="Icon")
+     * @var File
+     */
+    private $imageFile;
 
     /**
      * @ORM\Column(type="text")
@@ -217,6 +227,24 @@ class Projects
         }
 
         return $this;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($image) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->Icon = $image->getFilename();
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 
     public function __toString()
