@@ -12,6 +12,9 @@ easy_admin:
             - { entity: 'Releases', label: 'Releases', icon: 'save' }
             - { entity: 'User', label: 'Users', icon: 'user' }
         brand_color: '#a41eb0'
+        form_theme:
+            - '@EasyAdmin/form/bootstrap_4.html.twig'
+            - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
 
     list:
         actions:
@@ -78,7 +81,7 @@ easy_admin:
             form:
                 fields:
                     - { property: 'Version', label: 'Version' }
-                    - { property: 'Changelog', label: 'Changelog' }
+                    - { property: 'Changelog', label: 'Changelog', type: 'fos_ckeditor' }
                     - { property: 'downloadFile', type: 'vich_file' }
                     - { property: 'Md5', type: 'text', label: 'MD5' }
                     - { property: 'Project', label: 'Project' }

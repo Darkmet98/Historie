@@ -3,9 +3,6 @@ html, body {
 }
 
 /* CABECERA */
-header {
-    padding-bottom: 10vh;
-}
 .navbar .flex-1 {
     flex: 1;
     flex-basis: 100%;
@@ -20,10 +17,6 @@ header {
     height: 15vh;
 }
 
-#botonCarrito:hover:after {
-    content: " Carrito";
-}
-
 #botonCerrarSesion:hover:after {
     content: " Cerrar sesión";
 }
@@ -32,8 +25,8 @@ header {
     content: " Iniciar sesión";
 }
 
-#botonTienda:hover:after {
-    content: " Tienda";
+#botonAdmin:hover:after {
+    content: " Go to Admin panel";
 }
 
 
@@ -54,40 +47,18 @@ header {
     max-width: 100%;
 }
 
-.filtro {
-    border-radius: 10px 10px 10px 10px;
-    -moz-border-radius: 10px 10px 10px 10px;
-    -webkit-border-radius: 10px 10px 10px 10px;
-    border: 2px solid #000000;
-    color: rgba(255,255,255,.8);
+/* PROJECT */
 
+.header {
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    padding-top: 15vh;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
 }
-
-.filtro > a {
-    text-decoration: none;
-    color: rgba(255,255,255,.8);
-    -webkit-transition: text-shadow 0.2s; /* For Safari 3.1 to 6.0 */
-    transition: text-shadow 0.2s;
-}
-
-.filtro > a:hover {
-    text-shadow: 0 0 5px rgba(245,245,245,1);
-}
-
-.filtro > div > ul > li > a {
-    color: rgba(255,255,255,.8);
-}
-
-.filtro > ul > li > a {
-    color: rgba(255,255,255,.8);
-}
-
-.filtro > ul > li > a:hover {
-    text-decoration: underline;
-}
-
-.filtro > h3 {
-    margin-bottom: 3vh;
+.header > h2 {
+    text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
 }
 
 /* PIÉ */

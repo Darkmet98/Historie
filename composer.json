@@ -8,6 +8,7 @@
         "alterphp/easyadmin-extension-bundle": "^3.0",
         "czproject/git-php": "^3.17",
         "easycorp/easyadmin-bundle": "^2.3",
+        "friendsofsymfony/ckeditor-bundle": "^2.2",
         "gettext/gettext": "^5.4",
         "knplabs/knp-paginator-bundle": "^5.2",
         "lexik/jwt-authentication-bundle": "^2.6",

@@ -5,5 +5,41 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Bienvenido a Historie</h1>
+    <h2 class="text-center">Choose a project</h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="container">
+                    <div class="row">
+                        <div class="row row-cols-1 row-cols-md-3" id="plantas">
+                            {% for project in pagination  %}
+                                <div class="col mb-4" id="E{{ project.id }}">
+                                    <div class="card border-dark h-100">
+                                        <div class="card-header text-center">
+                                            <span class="card-title  h4">{{ project.name }}</span>
+                                        </div>
+                                        <img src="{{ asset('images/gameIcon/' ~ project.icon) }}" class="card-img-top imagenCarta" alt="...">
+                                        <div class="card-body">
+                                            <p class="card-text">{{ project.description }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script>
+                                    $("#E{{ project.id }}").click(function () {
+                                        window.location.href = "{{ path('main_project', {'id': project.id}) }}";
+                                    });
+                                </script>
+                                {% else %}
+                                <div class="col mb-12" >
+                                    <h1>There's any project on the database...</h1>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% include('shared/paginator.html.twig') %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

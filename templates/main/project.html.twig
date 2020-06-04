@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    ¡Bienvenido a Historie!
+{% endblock %}
+
+{% block body %}
+    <div class="container ">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="w-100 header border rounded" style="background-image:url({{ asset('images/gameIcon/' ~ project.icon) }});">
+                    <h2 class="text-center">{{ project.Name }}</h2>
+                </div>
+
+                {% for release in releases %}
+                    <div class="border rounded shadow-sm p-3 mb-5 bg-white">
+                        <h2>RELEASE VERSION: {{release.Version}}</h2>
+                        <hr>
+                        <h3>Changelog</h3>
+                        <div id="changelog">
+                            {{ release.Changelog|raw }}
+                        </div>
+                        <hr>
+                        <h3>Download</h3>
+                        <a class="text-decoration-none" href="{{ asset('Releases/' ~ release.File) }}">{{ release.File }}</a> <span class="badge badge-info" style="margin-left: 2vh">MD5: {{ release.Md5 }}</span>
+                    </div>
+                {% else %}
+                    <div class="col mb-12" >
+                        <h1 class="text-center">This game doesn't have any release for now...</h1>
+                        <img src="{{ asset('images/PleaseWait.jpg') }}" class="img-fluid" alt="Responsive image">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

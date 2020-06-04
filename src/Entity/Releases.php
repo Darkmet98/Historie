@@ -70,12 +70,13 @@ class Releases
 
     public function getChangelog(): ?string
     {
-        return $this->Changelog;
+
+        return base64_decode($this->Changelog);
     }
 
     public function setChangelog(string $Changelog): self
     {
-        $this->Changelog = $Changelog;
+        $this->Changelog = base64_encode($Changelog);
 
         return $this;
     }
