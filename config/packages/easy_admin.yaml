@@ -4,6 +4,7 @@ easy_admin:
         display_avatar: true
         avatar_property_path: 'gravatar'
     site_name: '<img src="/images/logo.png" style="height: 10vh;"  alt="">'
+
     design:
         menu:
             - { entity: 'Projects', label: 'Projects', icon: 'project-diagram' }
@@ -11,8 +12,8 @@ easy_admin:
             - { entity: 'Releases', label: 'Releases', icon: 'save' }
             - { entity: 'User', label: 'Users', icon: 'user' }
         brand_color: '#a41eb0'
+
     entities:
-        # List the entity class name you want to manage
         Pofile:
             class: App\Entity\PoFile
             controller: App\Controller\PofileController
@@ -45,3 +46,15 @@ easy_admin:
 
         Releases:
             class: App\Entity\Releases
+            form:
+                fields:
+                    - { property: 'Version', label: 'Version' }
+                    - { property: 'Changelog', label: 'Changelog' }
+                    - { property: 'downloadFile', type: 'vich_file' }
+                    - { property: 'Md5', type: 'text', label: 'MD5' }
+                    - { property: 'Project', label: 'Project' }
+            list:
+                fields:
+                    - { property: 'Version', label: 'Version' }
+                    - { property: 'Project', label: 'Project' }
+                    #- { property: 'downloadFile', template: 'Releases/download.html.twig', base_path: '%gameReleases%' }

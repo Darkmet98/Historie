@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use App\Repository\ReleasesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=ReleasesRepository::class)
+ * @Vich\Uploadable
  */
 class Releases
 {
@@ -31,6 +34,12 @@ class Releases
      * @ORM\Column(type="text")
      */
     private $File;
+
+    /**
+     * @Vich\UploadableField(mapping="Releases", fileNameProperty="File")
+     * @var File
+     */
+    private $downloadFile;
 
     /**
      * @ORM\Column(type="text")
@@ -105,6 +114,24 @@ class Releases
         $this->Project = $Project;
 
         return $this;
+    }
+
+    public function setDownloadFile(File $file = null)
+    {
+        $this->downloadFile = $file;
+
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($file) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->File = $file->getFilename();
+        }
+    }
+
+    public function getDownloadFile()
+    {
+        return $this->downloadFile;
     }
 
     public function __toString()

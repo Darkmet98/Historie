@@ -6,6 +6,7 @@
 parameters:
     git_repository: '%kernel.project_dir%/git'
     gameIcon: 'images/gameIcon'
+    gameReleases: 'Releases'
 services:
     # default configuration for services in *this* file
     _defaults:

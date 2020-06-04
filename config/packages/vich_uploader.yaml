@@ -5,3 +5,6 @@ vich_uploader:
         Projects:
             uri_prefix: '%gameIcon%'
             upload_destination: '%kernel.project_dir%/public/%gameIcon%'
+        Releases:
+            uri_prefix: '%gameReleases%'
+            upload_destination: '%kernel.project_dir%/public/%gameReleases%'
