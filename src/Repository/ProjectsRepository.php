@@ -30,7 +30,7 @@ class ProjectsRepository extends ServiceEntityRepository
         $qb=$em->createQueryBuilder("p")->select("p")->
         from('App\Entity\Projects', 'p');
 
-        $qb->innerJoin("p.userid", "us");
+        $qb->innerJoin("p.Users", "us");
         $qb->where("us.id = :id");
         $qb->setParameter("id", $id);
 

@@ -29,7 +29,7 @@ class PoEntryApi extends AbstractController
     {
         $poController = new PoEntryController();
 
-        $pos = $id->getPofileid();
+        $pos = $id->getPoFiles();
         $data = [];
 
         foreach ($pos as $po) {
@@ -52,13 +52,13 @@ class PoEntryApi extends AbstractController
         $poEntry = new PoEntryController();
 
         //Get the PoFile
-        $po = $poEntry->SearchEntry($id->getPofileid()->toArray(), $entry);
+        $po = $poEntry->SearchEntry($id->getPoFiles()->toArray(), $entry);
 
         //Check the position
         $entryPosition = ($position == null)?$po->getPosition():$position;
 
         //Get the entry
-        $poEntries = json_decode($po->getEntries(), true);
+        $poEntries = $po->getEntries();
         $entry = $poEntries[$entryPosition];
 
         return new JsonResponse($poEntry->GenerateEntryJson($entry, $id->getName(), $po->getName(), $entryPosition, count($poEntries)), Response::HTTP_OK);
@@ -77,10 +77,10 @@ class PoEntryApi extends AbstractController
             ->getRepository(PoFile::class)
             ->find($json["id"]);
 
-        $poEntries = json_decode($po->getEntries(), true);
+        $poEntries = $po->getEntries();
 
         $poEntries[$json["position"]]["Translated"] = $json["translation"];
-        $po->setEntries(json_encode($poEntries, true));
+        $po->setEntries($poEntries);
         $this->getDoctrine()->getManager()->flush();
 
         return new JsonResponse(null, Response::HTTP_OK);

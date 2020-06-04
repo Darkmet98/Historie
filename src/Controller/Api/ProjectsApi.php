@@ -19,6 +19,8 @@ class ProjectsApi extends AbstractController
 {
     /**
      * @Route("/projects", methods={"GET", "POST"})
+     * @param Request $request
+     * @return JsonResponse
      */
     public function getAll(Request $request): JsonResponse
     {
