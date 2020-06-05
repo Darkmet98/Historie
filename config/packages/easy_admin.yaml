@@ -15,6 +15,8 @@ easy_admin:
         form_theme:
             - '@EasyAdmin/form/bootstrap_4.html.twig'
             - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+        assets:
+            favicon: 'favicon-32x32.png'
 
     list:
         actions:
