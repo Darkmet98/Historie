@@ -29,16 +29,16 @@ easy_admin:
         Pofile:
             class: App\Entity\PoFile
             controller: App\Controller\PofileController
-            disabled_actions: ['show', 'edit']
+            disabled_actions: ['show', 'new']
             form:
                 fields:
-                    - 'Project'
-            new:
-                title: "Import/Update Components"
-            list:
-                actions:
-                    # displays both the action label and a custom icon
-                    - { name: 'new', label: 'Import/Update Components', icon: 'sync' }
+                    - 'Name'
+            #new:
+            #    title: "Import/Update Components"
+            #list:
+            #    actions:
+            #        # displays both the action label and a custom icon
+            #        - { name: 'new', label: 'Import/Update Components', icon: 'sync' }
 
 
         User:
@@ -58,6 +58,7 @@ easy_admin:
 
         Projects:
             class: App\Entity\Projects
+            controller: App\Controller\ProjectsController
             form:
                 fields:
                     - { property: 'Name', label: 'Name' }
@@ -75,6 +76,9 @@ easy_admin:
                     - { property: 'Users', label: 'Nº Users' }
                     - { property: 'poFiles', label: 'Nº Components' }
                     - { property: 'releases', label: 'Nº Releases' }
+                actions:
+                    - {name: 'GeneratePoFiles', label: 'Download/Update Components', icon: 'cloud-download-alt'}
+                    - {name: 'UploadPo', label: 'Upload Components', icon: 'cloud-upload-alt'}
             new:
                 title: "Create new project"
 
@@ -91,6 +95,5 @@ easy_admin:
                 fields:
                     - { property: 'Version', label: 'Version' }
                     - { property: 'Project', label: 'Project' }
-                    #- { property: 'downloadFile', template: 'Releases/download.html.twig', base_path: '%gameReleases%' }
             new:
                 title: "Upload new release"

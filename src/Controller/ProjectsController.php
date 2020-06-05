@@ -3,108 +3,96 @@
 namespace App\Controller;
 
 use App\Entity\Projects;
-use App\Form\ProjectsType;
-use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Cz\Git\GitException;
+use Cz\Git\GitRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
-/**
- * @Route("/projects")
- */
-class ProjectsController extends AbstractController
+class ProjectsController extends EasyAdminController
 {
     /**
-     * @Route("/", name="projects_index", methods={"GET"})
-     * @IsGranted("ROLE_ADMIN")
-     * @param PaginatorInterface $paginator
-     * @param Request $request
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * Generate the PoEntries to the database
      */
-    public function index(PaginatorInterface $paginator, Request $request): Response
+    public function GeneratePoFilesAction()
     {
-        $projects = $this->getDoctrine()
-            ->getRepository(Projects::class)
-            ->findAll();
+        $id = $this->request->query->get('id');
+        $entity = $this->em->getRepository(Projects::class)->find($id);
 
-        $pagination = $paginator->paginate(
-            $projects,
-            $request->query->getInt("page",1),
-            5
-        );
+        try {
+            $poFile = new PofileController();
+            $poFile->GeneratePoFiles($entity, $this->getParameter('git_repository'), $this->em);
 
-        return $this->render('projects/index.html.twig', [
-            'pagination' => $pagination,
-        ]);
-    }
-
-    /**
-     * @Route("/new", name="projects_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $project = new Projects();
-        $form = $this->createForm(ProjectsType::class, $project);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($project);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('projects_index');
+            $this->addFlash(
+                'notice',
+                $entity->getName().' updated and/or inserted new components!'
+            );
+        }
+        catch (\Exception $e){
+            $this->addFlash(
+                'warning',
+                'There has been an issue while updating the components! Are your repository and branch set up correctly?'
+            );
         }
 
-        return $this->render('projects/new.html.twig', [
-            'project' => $project,
-            'form' => $form->createView(),
+
+        // redirect to the 'list' view of the given entity ...
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="projects_show", methods={"GET"})
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws GitException
+     * Update the local po's and submit to the git
      */
-    public function show(Projects $project): Response
-    {
-        return $this->render('projects/show.html.twig', [
-            'project' => $project,
-        ]);
-    }
+    public function UploadPoAction(){
 
-    /**
-     * @Route("/{id}/edit", name="projects_edit", methods={"GET","POST"})
-     */
-    public function edit(Request $request, Projects $project): Response
-    {
-        $form = $this->createForm(ProjectsType::class, $project);
-        $form->handleRequest($request);
+        $id = $this->request->query->get('id');
+        $entity = $this->em->getRepository(Projects::class)->find($id);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        try {
+            $poFile = new PofileController();
+            $poFile->UpdateTranslationsAction($entity);
+            $this->Commit($entity->getName(), $this->getUser()->getUsername(), $entity->getRepository());
 
-            return $this->redirectToRoute('projects_index');
+            $this->addFlash(
+                'notice',
+                'Inserted the new translations from the '.$entity->getName().' to git!'
+            );
+        }
+        catch (Exception $e){
+            $this->addFlash(
+                'warning',
+                'There has been an issue while updating the components! Are your repository and branch set up correctly?'
+            );
         }
 
-        return $this->render('projects/edit.html.twig', [
-            'project' => $project,
-            'form' => $form->createView(),
+
+        // redirect to the 'list' view of the given entity ...
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="projects_delete", methods={"DELETE"})
+     * @param $projectName
+     * @param $mail
+     * @param $repository
+     * @throws GitException
+     *
+     * Commit to the git
      */
-    public function delete(Request $request, Projects $project): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$project->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($project);
-            $entityManager->flush();
-        }
+    private function Commit($projectName, $mail, $repository){
 
-        return $this->redirectToRoute('projects_index');
+        $folderRoute = $this->getParameter('git_repository').'/'.PofileController::SanitizeName($projectName);
+        $repo = new GitRepository($folderRoute);
+        $repo->addAllChanges();
+        $repo->commit("Updated translation ".$projectName." for the user ".$mail."at ".date("D M d, Y G:i"));
+        $repo->push($repository);
     }
 }

@@ -8,6 +8,7 @@ use Cz\Git\GitException;
 use Cz\Git\GitRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Gettext\Generator\JsonGenerator;
+use Gettext\Generator\PoGenerator;
 use Gettext\Loader\PoLoader;
 use RecursiveDirectoryIterator as dirIterator;
 use RecursiveIteratorIterator as recursiveIterator;
@@ -23,25 +24,26 @@ class PofileController extends EasyAdminController
         //Get the project
         $project = $entity->getProject();
 
-        $this->GeneratePoFiles($project);
+        $this->GeneratePoFiles($project, $this->getParameter('git_repository'));
     }
 
     /**
      * @param Projects $project
+     * @param string $gitPath
+     * @param null $manager
      * @throws GitException
-     *
      * Generate the po entries from the pofile
      */
-    private function GeneratePoFiles(Projects $project){
+    public function GeneratePoFiles(Projects $project, string $gitPath, $manager=null){
 
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = ($manager == null)?$this->getDoctrine()->getManager():$manager;
 
         //Obtain the folder route
-        $folderRoute = $this->getParameter('git_repository').'/'.self::SanitizeName($project->getName());
+        $folderRoute = $gitPath.'/'.self::SanitizeName($project->getName());
 
         //Check the git folder
-        if ( !is_dir(  $this->getParameter('git_repository') ) ) {
-            mkdir(  $this->getParameter('git_repository') );
+        if ( !is_dir(  $gitPath ) ) {
+            mkdir(  $gitPath );
         }
 
         //Check the project folder
@@ -69,7 +71,7 @@ class PofileController extends EasyAdminController
 
             $json = (new JsonGenerator())->generateString($translations);
 
-            $poFile = $this->CheckPoExists($path, $project);
+            $poFile = $this->CheckPoExists($path, $project, $entityManager);
             $poFile->setEntries($poController->FixJsonGeneration($json));
 
             $entityManager->persist($poFile);
@@ -101,10 +103,11 @@ class PofileController extends EasyAdminController
     /**
      * @param string $path
      * @param Projects $project
+     * @param $doctrine
      * @return PoFile|object
      */
-    function CheckPoExists(string $path, Projects $project){
-        $poFile = $this->getDoctrine()
+    function CheckPoExists(string $path, Projects $project, $doctrine){
+        $poFile = $doctrine
             ->getRepository(PoFile::class)
             ->findOneBy(array('Path' => $path));
 
@@ -117,6 +120,31 @@ class PofileController extends EasyAdminController
         $poFile->setPosition(0);
         $poFile->setProject($project);
         return $poFile;
+    }
+
+    /**
+     * @param Projects $project
+     * Update the translations files
+     */
+    public function UpdateTranslationsAction(Projects $project){
+        $poFiles = $project->getPoFiles();
+        $loader = new PoLoader();
+
+        foreach ($poFiles as $poFile){
+            $po = $loader->loadFile($poFile->getPath());
+            $entries = $poFile->getEntries();
+
+            foreach ($entries as $entry){
+                if($entry["Translated"] != null) {
+                    $translation = $po->find($entry["Context"], $entry["Original"]);
+                    $translation->translate($entry["Translated"]);
+                    $po->addOrMerge($translation);
+                }
+            }
+
+            $poGenerator = new PoGenerator();
+            $poGenerator->generateFile($po, $poFile->getPath());
+        }
     }
 
     /**
