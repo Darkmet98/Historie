@@ -4,32 +4,40 @@ namespace App\Controller;
 
 use App\Entity\PoFile;
 use App\Entity\Projects;
+use Cz\Git\GitException;
 use Cz\Git\GitRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Gettext\Generator\JsonGenerator;
 use Gettext\Loader\PoLoader;
 use RecursiveDirectoryIterator as dirIterator;
 use RecursiveIteratorIterator as recursiveIterator;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/pofile")
- */
 class PofileController extends EasyAdminController
 {
     /**
      * @param PoFile $entity
-     * @throws \Cz\Git\GitException Generate the po entries on the pofile
+     * @throws GitException
      */
     protected function persistEntity($entity) {
-
-        $entityManager = $this->getDoctrine()->getManager();
 
         //Get the project
         $project = $entity->getProject();
 
+        $this->GeneratePoFiles($project);
+    }
+
+    /**
+     * @param Projects $project
+     * @throws GitException
+     *
+     * Generate the po entries from the pofile
+     */
+    private function GeneratePoFiles(Projects $project){
+
+        $entityManager = $this->getDoctrine()->getManager();
+
         //Obtain the folder route
-        $folderRoute = $this->getParameter('git_repository').'/'.$project->getName();
+        $folderRoute = $this->getParameter('git_repository').'/'.self::SanitizeName($project->getName());
 
         //Check the git folder
         if ( !is_dir(  $this->getParameter('git_repository') ) ) {
@@ -56,17 +64,18 @@ class PofileController extends EasyAdminController
         $poController = new PoEntryController();
 
         foreach ($array as $path) {
-                //Load a .po file and export to .json
-                $translations = (new PoLoader())->loadFile($path);
+            //Load a .po file and export to .json
+            $translations = (new PoLoader())->loadFile($path);
 
-                $json = (new JsonGenerator())->generateString($translations);
+            $json = (new JsonGenerator())->generateString($translations);
 
-                $poFile = $this->CheckPoExists($path, $project);
-                $poFile->setEntries($poController->FixJsonGeneration($json));
+            $poFile = $this->CheckPoExists($path, $project);
+            $poFile->setEntries($poController->FixJsonGeneration($json));
 
-                $entityManager->persist($poFile);
+            $entityManager->persist($poFile);
         }
         $entityManager->flush();
+
     }
 
     /**
@@ -108,5 +117,27 @@ class PofileController extends EasyAdminController
         $poFile->setPosition(0);
         $poFile->setProject($project);
         return $poFile;
+    }
+
+    /**
+     * @param string $str
+     * @return string|string[]|void
+     *
+     * Sanitize the name
+     * https://stackoverflow.com/a/19018736
+     */
+    public static function SanitizeName ($str = '')
+    {
+        $str = strip_tags($str);
+        $str = preg_replace('/[\r\n\t ]+/', ' ', $str);
+        $str = preg_replace('/[\"\*\/\:\<\>\?\'\|]+/', ' ', $str);
+        $str = strtolower($str);
+        $str = html_entity_decode( $str, ENT_QUOTES, "utf-8" );
+        $str = htmlentities($str, ENT_QUOTES, "utf-8");
+        $str = preg_replace("/(&)([a-z])([a-z]+;)/i", '$2', $str);
+        $str = str_replace(' ', '-', $str);
+        $str = rawurlencode($str);
+        $str = str_replace('%', '-', $str);
+        return $str;
     }
 }
