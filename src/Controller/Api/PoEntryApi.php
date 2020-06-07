@@ -7,6 +7,7 @@ namespace App\Controller\Api;
 use App\Controller\PoEntryController;
 use App\Entity\PoFile;
 use App\Entity\Projects;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,25 +20,46 @@ use Symfony\Component\Routing\Annotation\Route;
 class PoEntryApi extends AbstractController
 {
     /**
-     * @Route("/entries/{id}", name="pofile_json_get", methods={"GET"})
-     * @param $id
+     * @Route("/entries/{id}", name="pofile_json_get", methods={"GET","POST"})
+     * @param PaginatorInterface $paginator
+     * @param Projects $id
+     * @param Request $request
      * @return JsonResponse
      *
      * Return a list of components
      */
-    public function getJsonList(Projects $id): JsonResponse
+    public function getJsonList(PaginatorInterface $paginator, Projects $id, Request $request): JsonResponse
     {
         $poController = new PoEntryController();
 
         $pos = $id->getPoFiles();
         $data = [];
+        $pageIndex = 1;
 
+        //Check if the request is null
+        if ($request->getContent() != null){
+            $pageIndex = json_decode($request->getContent(), true)["page"];
+        }
+
+        //Dump the necessary data
         foreach ($pos as $po) {
             array_push($data, $poController->GenerateObjectJson($po));
         }
 
+        //Generate a data count
+        $count = round(count($data) / 5,0);
+
+        //Set the pagination
+        $pagination = $paginator->paginate(
+            $data,
+            $pageIndex,
+            5
+        );
+
+        //Return the json
         return new JsonResponse([
-            "Entries" => $data,
+            "Entries" => $pagination->getItems(),
+            "NumberPages" => $count,
             "ProjectName" => $id->getName()
         ], Response::HTTP_OK);
     }
