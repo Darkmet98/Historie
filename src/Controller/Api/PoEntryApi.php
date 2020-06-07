@@ -98,10 +98,11 @@ class PoEntryApi extends AbstractController
             ? ["Original"=>"None", "Translated"=>"None"]
             : $poEntries[$entryPosition+1];
 
+
         return new JsonResponse(
             $poEntry->GenerateEntryJson(
                 $currentEntry,$previousEntry,$nextEntry, $id->getName(), $po->getName(),
-                $entryPosition, count($poEntries)), Response::HTTP_OK);
+                $entryPosition, count($poEntries), $id->getVisualizator()), Response::HTTP_OK);
     }
 
     /**

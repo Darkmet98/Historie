@@ -8,6 +8,7 @@ easy_admin:
     design:
         menu:
             - { entity: 'Projects', label: 'Projects', icon: 'project-diagram' }
+            - { entity: 'TextVisualizator', label: 'Text visualizators', icon: 'image' }
             - { entity: 'Pofile', label: 'Components', icon: 'prescription-bottle' }
             - { entity: 'Releases', label: 'Releases', icon: 'save' }
             - { entity: 'User', label: 'Users', icon: 'user' }
@@ -67,6 +68,7 @@ easy_admin:
                     - { property: 'repository', type: 'text', label: 'Repository' }
                     - { property: 'Branch', label: 'Branch' }
                     - { property: 'Users', label: 'Users' }
+                    - { property: 'Visualizator', label: 'Text Visualizator' }
             list:
                 title: "Project List"
                 fields:
@@ -97,3 +99,17 @@ easy_admin:
                     - { property: 'Project', label: 'Project' }
             new:
                 title: "Upload new release"
+
+        TextVisualizator:
+            class: App\Entity\TextVisualizator
+            form:
+                fields:
+                    - 'Name'
+                    - { property: 'imageFile', type: 'vich_image', label: 'Background image' }
+                    - { property: 'FontSize', label: 'Font Size' }
+                    - { property: 'LineHeight', label: 'Line Height' }
+                    - { property: 'TopPosition', label: 'Top Position' }
+                    - { property: 'LeftPosition', label: 'Left Position' }
+            list:
+                fields:
+                    - { property: 'Name', label: 'Name' }

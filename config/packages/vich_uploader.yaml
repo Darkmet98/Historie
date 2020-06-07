@@ -8,3 +8,6 @@ vich_uploader:
         Releases:
             uri_prefix: '%gameReleases%'
             upload_destination: '%kernel.project_dir%/public/%gameReleases%'
+        TextVisualizators:
+            uri_prefix: '%gameVisualizator%'
+            upload_destination: '%kernel.project_dir%/public/%gameVisualizator%'

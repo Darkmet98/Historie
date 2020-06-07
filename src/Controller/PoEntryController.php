@@ -25,17 +25,18 @@ class PoEntryController
 
     /**
      * @param array $entry
-     * @param array $nextEntry
      * @param array $previousEntry
+     * @param array $nextEntry
      * @param string $name
      * @param string $file
      * @param int $index
      * @param int $size
+     * @param $visualizator
      * @return array
      *
      * Generate a Json entry for the editor
      */
-    public function GenerateEntryJson(array $entry, array $previousEntry, array $nextEntry, string $name, string $file, int $index, int $size) {
+    public function GenerateEntryJson(array $entry, array $previousEntry, array $nextEntry, string $name, string $file, int $index, int $size, $visualizator) {
         return[
             "Project"=>$name,
             "CurrentEntry"=>$entry,
@@ -43,7 +44,8 @@ class PoEntryController
             "PreviousEntry"=>$previousEntry,
             "File"=>$file,
             "Size"=>$size,
-            "Index"=>$index
+            "Index"=>$index,
+            "Visualizator"=>$this->GetVisualizator($visualizator)
         ];
     }
 
@@ -135,5 +137,30 @@ class PoEntryController
     private function GetFullEntry(string $json) {
         $json = json_decode($json, true);
         return $json["messages"];
+    }
+
+    /**
+     * @param $visualizator
+     * @return array
+     *
+     * Return a json from the visualizator
+     */
+    private function GetVisualizator($visualizator){
+        if ($visualizator != null)
+            return [
+            "ImageFile"=>$visualizator->getBackground(),
+            "FontSize"=>$visualizator->getFontSize(),
+            "LineHeight"=>$visualizator->getLineHeight(),
+            "TopPosition"=>$visualizator->getTopPosition(),
+            "LeftPosition"=>$visualizator->getLeftPosition()
+        ];
+
+        return [
+            "ImageFile"=>"NONE",
+            "FontSize"=>0,
+            "LineHeight"=>0,
+            "TopPosition"=>0,
+            "LeftPosition"=>0
+        ];
     }
 }

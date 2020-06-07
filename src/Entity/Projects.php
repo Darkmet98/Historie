@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ProjectsRepository;
-use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -69,11 +68,17 @@ class Projects
      */
     private $poFiles;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=TextVisualizator::class, inversedBy="projects")
+     */
+    private $Visualizator;
+
     public function __construct()
     {
         $this->Users = new ArrayCollection();
         $this->releases = new ArrayCollection();
         $this->poFiles = new ArrayCollection();
+        $this->TextVisualizator = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -250,5 +255,17 @@ class Projects
     public function __toString()
     {
         return $this->Name;
+    }
+
+    public function getVisualizator(): ?TextVisualizator
+    {
+        return $this->Visualizator;
+    }
+
+    public function setVisualizator(?TextVisualizator $Visualizator): self
+    {
+        $this->Visualizator = $Visualizator;
+
+        return $this;
     }
 }
