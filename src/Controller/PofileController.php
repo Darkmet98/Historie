@@ -137,8 +137,10 @@ class PofileController extends EasyAdminController
             foreach ($entries as $entry){
                 if($entry["Translated"] != null) {
                     $translation = $po->find($entry["Context"], $entry["Original"]);
-                    $translation->translate($entry["Translated"]);
-                    $po->addOrMerge($translation);
+                    if ($translation != null) {
+                        $translation->translate($entry["Translated"]);
+                        $po->addOrMerge($translation);
+                    }
                 }
             }
 
