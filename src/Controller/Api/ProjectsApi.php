@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Projects;
 use App\Entity\User;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,17 +20,23 @@ class ProjectsApi extends AbstractController
 {
     /**
      * @Route("/projects", methods={"GET", "POST"})
+     * @param PaginatorInterface $paginator
      * @param Request $request
      * @return JsonResponse
+     *
+     * Get the available projects
      */
-    public function getAll(Request $request): JsonResponse
+    public function getAll(PaginatorInterface $paginator, Request $request): JsonResponse
     {
-        $user = json_decode($request->getContent(),true);
+        $json = json_decode($request->getContent(),true);
+        $pageIndex = $json["page"];
+
+        //Get the projects from the users
         $projects = null;
-        if(!is_null($user)) {
+        if(!is_null($json)) {
             $projects = $this->getDoctrine()
                 ->getRepository(Projects::class)
-                ->getProjectsFiltro($user["id"]);
+                ->getProjectsFiltro($json["id"]);
         }
         else{
             $projects = $this->getDoctrine()
@@ -37,14 +44,28 @@ class ProjectsApi extends AbstractController
                 ->findAll();
         }
 
+        //Parse the projects
         $data = [];
-
         foreach ($projects as $project) {
-            array_push($data, $this->GenerateObjectJson($project));
+            //Check if the project has components
+            if(count($project->getPoFiles()) != 0)
+                array_push($data, $this->GenerateObjectJson($project));
         }
 
+        //Generate a data count
+        $count = round(count($data) / 3,0);
 
-        return new JsonResponse($data, Response::HTTP_OK);
+        //Set the pagination
+        $pagination = $paginator->paginate(
+            $data,
+            $pageIndex,
+            3
+        );
+
+        return new JsonResponse([
+            "Projects"=> $pagination->getItems(),
+            "NumberPages" => $count
+        ], Response::HTTP_OK);
     }
 
 
