@@ -82,11 +82,26 @@ class PoEntryApi extends AbstractController
         //Check the position
         $entryPosition = ($position == null)?$po->getPosition():$position;
 
-        //Get the entry
+        //Get the entries
         $poEntries = $po->getEntries();
-        $entry = $poEntries[$entryPosition];
 
-        return new JsonResponse($poEntry->GenerateEntryJson($entry, $id->getName(), $po->getName(), $entryPosition, count($poEntries)), Response::HTTP_OK);
+        //Obtain the current entry
+        $currentEntry = $poEntries[$entryPosition];
+
+        //Obtain the previous entry
+        $previousEntry = ($entryPosition-1 < 0)
+            ? ["Original"=>"None", "Translated"=>"None"]
+            : $poEntries[$entryPosition-1];
+
+        //Obtain the next entry
+        $nextEntry = ($entryPosition+1 == count($poEntries))
+            ? ["Original"=>"None", "Translated"=>"None"]
+            : $poEntries[$entryPosition+1];
+
+        return new JsonResponse(
+            $poEntry->GenerateEntryJson(
+                $currentEntry,$previousEntry,$nextEntry, $id->getName(), $po->getName(),
+                $entryPosition, count($poEntries)), Response::HTTP_OK);
     }
 
     /**

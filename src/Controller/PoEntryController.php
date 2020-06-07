@@ -25,6 +25,8 @@ class PoEntryController
 
     /**
      * @param array $entry
+     * @param array $nextEntry
+     * @param array $previousEntry
      * @param string $name
      * @param string $file
      * @param int $index
@@ -33,10 +35,12 @@ class PoEntryController
      *
      * Generate a Json entry for the editor
      */
-    public function GenerateEntryJson(array $entry, string $name, string $file, int $index, int $size) {
+    public function GenerateEntryJson(array $entry, array $previousEntry, array $nextEntry, string $name, string $file, int $index, int $size) {
         return[
             "Project"=>$name,
-            "Entry"=>$entry,
+            "CurrentEntry"=>$entry,
+            "NextEntry"=>$nextEntry,
+            "PreviousEntry"=>$previousEntry,
             "File"=>$file,
             "Size"=>$size,
             "Index"=>$index
