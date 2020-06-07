@@ -51,12 +51,43 @@ class PoEntryController
      * Generate a Json entry for the component list
      */
     public function GenerateObjectJson(PoFile $po) {
+        $count = $this->CheckTranslatedEntries($po);
         return  [
             'Id'=>$po->getId(),
             'Name'=>$po->getName(),
-            'Status'=>'Incomplete',
-            'Translated'=>40
+            'Status'=>$this->CheckTranslationStatus($count),
+            'Translated'=>$count
         ];
+    }
+
+    /**
+     * @param PoFile $po
+     * @return false|float|void
+     *
+     * Calculate the percentage of translated entries
+     */
+    private function CheckTranslatedEntries(PoFile $po) {
+        $translated = 0;
+        foreach ($po->getEntries() as $entry) {
+            if($entry["Translated"] != null)
+                $translated++;
+        }
+        return round(($translated / count($po->getEntries()) * 100), 2,PHP_ROUND_HALF_UP);
+    }
+
+    /**
+     * @param $count
+     * @return string
+     *
+     * Check the translation status
+     */
+    private function CheckTranslationStatus($count){
+        if($count == 0)
+            return "Not started";
+        else if($count == 100)
+            return "Finished";
+        else
+            return "In progress";
     }
 
     /**

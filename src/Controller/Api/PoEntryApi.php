@@ -36,7 +36,10 @@ class PoEntryApi extends AbstractController
             array_push($data, $poController->GenerateObjectJson($po));
         }
 
-        return new JsonResponse($data, Response::HTTP_OK);
+        return new JsonResponse([
+            "Entries" => $data,
+            "ProjectName" => $id->getName()
+        ], Response::HTTP_OK);
     }
 
     /**

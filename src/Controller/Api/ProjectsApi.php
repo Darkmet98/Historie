@@ -53,8 +53,7 @@ class ProjectsApi extends AbstractController
             'Id'=>$project->getId(),
             'Name'=>$project->getName(),
             'Description'=>$project->getDescription(),
-            'Repository'=>$project->getRepository(),
-            'Branch'=>$project->getBranch()
+            'Icon'=>$project->getIcon()
         ];
     }
 }

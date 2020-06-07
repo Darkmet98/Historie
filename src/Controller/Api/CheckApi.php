@@ -1,11 +1,6 @@
 <?php
-
-
 namespace App\Controller\Api;
 
-
-use App\Controller\PoEntryController;
-use App\Entity\Projects;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +16,7 @@ class CheckApi extends AbstractController
      * @param $id
      * @return JsonResponse
      *
-     * Return a list of components
+     * Check if the token is alive
      */
     public function checkApi(): JsonResponse
     {
