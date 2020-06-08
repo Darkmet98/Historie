@@ -54,22 +54,30 @@ class ProjectsController extends EasyAdminController
         $id = $this->request->query->get('id');
         $entity = $this->em->getRepository(Projects::class)->find($id);
 
-        try {
-            $poFile = new PofileController();
-            $poFile->UpdateTranslationsAction($entity);
-            $this->Commit($entity->getName(), $this->getUser()->getUsername(), $entity->getRepository());
+        if (count($entity->getPoFiles()) != 0) {
+            try {
+                $poFile = new PofileController();
+                $poFile->UpdateTranslationsAction($entity);
+                $this->Commit($entity->getName(), $this->getUser()->getUsername(), $entity->getRepository());
 
-            $this->addFlash(
-                'notice',
-                'Inserted the new translations from the '.$entity->getName().' to git!'
-            );
+                $this->addFlash(
+                    'notice',
+                    'Inserted the new translations from the '.$entity->getName().' to git!'
+                );
+            }
+            catch (Exception $e){
+                $this->addFlash(
+                    'warning',
+                    'There has been an issue while updating the components! Are your repository and branch set up correctly?'
+                );
+            }
         }
-        catch (Exception $e){
+        else
             $this->addFlash(
                 'warning',
-                'There has been an issue while updating the components! Are your repository and branch set up correctly?'
+                'This project doesn\'t have any component configured!'
             );
-        }
+
 
 
         // redirect to the 'list' view of the given entity ...
