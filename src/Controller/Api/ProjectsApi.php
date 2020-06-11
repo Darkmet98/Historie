@@ -53,7 +53,11 @@ class ProjectsApi extends AbstractController
         }
 
         //Generate a data count
-        $count = round(count($data) / 3,0);
+        $count = count($data) / 3;
+        $round = round($count,0, PHP_ROUND_HALF_DOWN);
+        
+        if(is_float($count))
+            $round++;
 
         //Set the pagination
         $pagination = $paginator->paginate(
@@ -64,7 +68,7 @@ class ProjectsApi extends AbstractController
 
         return new JsonResponse([
             "Projects"=> $pagination->getItems(),
-            "NumberPages" => $count
+            "NumberPages" => $round
         ], Response::HTTP_OK);
     }
 
