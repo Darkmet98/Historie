@@ -1,4 +1,10 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Darkmet98/Json"
+        }
+    ],
     "type": "project",
     "license": "proprietary",
     "require": {
@@ -37,7 +43,8 @@
         "symfony/validator": "5.0.*",
         "symfony/web-link": "5.0.*",
         "symfony/yaml": "5.0.*",
-        "vich/uploader-bundle": "^1.13"
+        "vich/uploader-bundle": "^1.13",
+        "gettext/json": "dev-fix-null-translations"
     },
     "require-dev": {
         "symfony/debug-pack": "*",
